@@ -15,7 +15,8 @@ export class TaskRepository extends Repository<Task> {
         }
 
         if (search) {
-            query.andWhere('(task.title LIKE :search OR task.description LIKE :search)', { search: `%${search}%` });
+            // query.andWhere('(task.title LIKE :search OR task.description LIKE :search)', { search: `%${search}%` });
+            query.andWhere('(levenshtein_less_equal(:search, sentence.text, 4) < 5)', { search: `%${search}%` });
         }
 
         const tasks = await query.getMany();
